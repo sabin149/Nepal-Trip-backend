@@ -1,6 +1,25 @@
 const Hotel = require('../model/hotelModel');
+const { APIfeatures } = require('../lib/features');
 const hotelCtrl = {
-createHotel: async (req, res) => {
+
+    getHotels: async (req, res) => {
+        try {
+            const features = new APIfeatures(Hotel.find(), req.query).paginating().sorting().searching().filtering();
+
+            const result = await Promise.allSettled([
+                features.query,
+                Hotel.countDocuments() // count number of hotels
+            ])
+
+            const hotels = result[0].status === "fulfilled" ? result[0].value : [];
+            const count = result[1].status === "fulfilled" ? result[1].value : 0;
+            // const hotels = await Hotel.find();
+            res.json({ status: 'success', count, hotels });
+        } catch (error) {
+            return res.status(500).json({ status: "failed", msg: error.message })
+        }
+    },
+    createHotel: async (req, res) => {
         try {
             const {
                 hotel_name, address, phone, hotel_email, pan_no, price, hotel_images, hotel_info, hotel_facilities, hotel_policies
@@ -26,7 +45,7 @@ createHotel: async (req, res) => {
                 if (hotel_policies.length === 0)
                     return res.status(400).json({ msg: "Please add your hotel policies." })
                 const newHotel = new Hotel({
-                    hotel_name, address, phone, hotel_email, pan_no, price, hotel_images, hotel_info, hotel_facilities, hotel_policies,user:req.user._id
+                    hotel_name, address, phone, hotel_email, pan_no, price, hotel_images, hotel_info, hotel_facilities, hotel_policies, user: req.user._id
                 })
                 await newHotel.save();
                 res.json({
@@ -44,5 +63,48 @@ createHotel: async (req, res) => {
             return res.status(500).json({ status: "failed", msg: error.message })
         }
     },
+    approveHotel: async (req, res) => {
+        try {
+            // const hotel = await Hotel.findOneAndUpdate({ _id: req.params.id }, {
+            //     hotel_validity: true
+            // }, { new: true })
+
+            const hotel = await Hotel.findOne({ _id: req.params.id })
+
+            if (hotel.hotel_validity === false) {
+             const newHotel = await Hotel.findOneAndUpdate({ _id: hotel._id }, {
+                    hotel_validity: true
+                }, { new: true })
+            
+            res.json({
+                status: "success",
+                msg: "Hotel approved!",
+                newHotel: {
+                    ...newHotel._doc
+                }
+            })}else{
+            const newHotel= await Hotel.findOneAndUpdate({ _id: hotel._id }, {
+                            hotel_validity: false
+                        }, { new: true })
+                        res.json({
+                            status: "success",
+                            msg: "Hotel not approved!",
+                            newHotel: {
+                                ...newHotel._doc
+                            }
+                        })
+            }
+
+            // if (hotel.hotel_validity === false) {
+            //     await Hotel.findOneAndUpdate({ _id: hotel._id }, {
+            //         hotel_validity: true
+            //     }, { new: true })
+            // }
+           
+        } catch (error) {
+            return res.status(500).json({ status: "failed", msg: error.message })
+        }
+    }
+
 }
-module.exports=hotelCtrl
+module.exports = hotelCtrl

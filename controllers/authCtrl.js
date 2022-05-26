@@ -15,11 +15,12 @@ const authCtrl = {
             if (user_email) return res.status(400).json({ status: "failed", msg: "This email already exist." })
             if (password.length < 6)
                 return res.status(400).json({ status: "failed", msg: "Password must be at least 6 characters." })
-            if (password !== password_confirmation) return res.status(400).json({ status: "failed", msg: "Password and Confirmation Password Doesn't Match" })
+            if (password !== password_confirmation) return res.status(400).json({ status: "failed", msg: "Password and Confirmation Password Doesn't Match" }) 
             const passwordHash = await bcrypt.hash(password, 12)
             const newUser = new Users({
                 fullname, username: newUserName, gender, phone, email, password: passwordHash
             })
+       
             const access_token = createAccessToken({ id: newUser._id })
             const refresh_token = createRefreshToken({ id: newUser._id })
             res.cookie('refreshtoken', refresh_token, {
