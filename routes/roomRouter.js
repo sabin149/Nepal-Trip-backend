@@ -4,7 +4,7 @@ const auth=require("../middleware/auth")
 const authVendor=require("../middleware/auth-vendor")
 
 router.route("/room")
-.post(auth,authVendor, roomCtrl.roomCtrl)
+.post(auth,authVendor, roomCtrl.createHotelRoom)
 
 
 module.exports = router;
