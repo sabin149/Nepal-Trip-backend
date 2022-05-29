@@ -65,12 +65,8 @@ const hotelCtrl = {
     },
     approveHotel: async (req, res) => {
         try {
-            // const hotel = await Hotel.findOneAndUpdate({ _id: req.params.id }, {
-            //     hotel_validity: true
-            // }, { new: true })
-
             const hotel = await Hotel.findOne({ _id: req.params.id })
-
+    
             if (hotel.hotel_validity === false) {
              const newHotel = await Hotel.findOneAndUpdate({ _id: hotel._id }, {
                     hotel_validity: true
@@ -94,12 +90,6 @@ const hotelCtrl = {
                             }
                         })
             }
-
-            // if (hotel.hotel_validity === false) {
-            //     await Hotel.findOneAndUpdate({ _id: hotel._id }, {
-            //         hotel_validity: true
-            //     }, { new: true })
-            // }
            
         } catch (error) {
             return res.status(500).json({ status: "failed", msg: error.message })
