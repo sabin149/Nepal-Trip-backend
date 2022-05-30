@@ -7,6 +7,7 @@ const authAdmin=require("../middleware/auth-admin")
 router.route("/hotel")
 .post(auth,authVendor, hotelCtrl.createHotel)
 .get(auth, hotelCtrl.getHotels)
+.get(auth, hotelCtrl.searchHotel)
 
 router.patch("/approveHotel/:id",auth,authAdmin,hotelCtrl.approveHotel)
 
