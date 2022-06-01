@@ -145,7 +145,15 @@ const hotelCtrl = {
         } catch (error) {
             return res.status(500).json({ status: "failed", msg: error.message })
         }
-    }
+    },
+    getHotel: async (req, res) => {
+        try {
+            const hotel = await Hotel.findById(req.params.id);
+            res.json({ status: 'success', hotel });
+        } catch (error) {
+            return res.status(500).json({ status: "failed", msg: error.message })
+        }
+    },
 
 }
 module.exports = hotelCtrl

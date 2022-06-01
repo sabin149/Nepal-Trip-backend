@@ -10,4 +10,7 @@ router.route("/hotel")
 
 router.patch("/approveHotel/:id",auth,authAdmin,hotelCtrl.approveHotel)
 
+router.route("/hotel/:id")
+.get(hotelCtrl.getHotel)
+
 module.exports = router;
