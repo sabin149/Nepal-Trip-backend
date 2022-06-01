@@ -66,82 +66,60 @@ const hotelCtrl = {
     approveHotel: async (req, res) => {
         try {
             const hotel = await Hotel.findOne({ _id: req.params.id })
-    
+
             if (hotel.hotel_validity === false) {
-             const newHotel = await Hotel.findOneAndUpdate({ _id: hotel._id }, {
+                const newHotel = await Hotel.findOneAndUpdate({ _id: hotel._id }, {
                     hotel_validity: true
                 }, { new: true })
-            
-            res.json({
-                status: "success",
-                msg: "Hotel approved!",
-                newHotel: {
-                    ...newHotel._doc
-                }
-            })}else{
-            const newHotel= await Hotel.findOneAndUpdate({ _id: hotel._id }, {
-                            hotel_validity: false
-                        }, { new: true })
-                        res.json({
-                            status: "success",
-                            msg: "Hotel not approved!",
-                            newHotel: {
-                                ...newHotel._doc
-                            }
-                        })
+
+                res.json({
+                    status: "success",
+                    msg: "Hotel approved!",
+                    newHotel: {
+                        ...newHotel._doc
+                    }
+                })
+            } else {
+                const newHotel = await Hotel.findOneAndUpdate({ _id: hotel._id }, {
+                    hotel_validity: false
+                }, { new: true })
+                res.json({
+                    status: "success",
+                    msg: "Hotel not approved!",
+                    newHotel: {
+                        ...newHotel._doc
+                    }
+                })
             }
-           
+
         } catch (error) {
             return res.status(500).json({ status: "failed", msg: error.message })
         }
     },
     searchHotel: async (req, res) => {
-
-        // try {
-        // const hotels=await Hotel.find({$or:[
-        //     {
-        //         address:{$regex:req.query.address}
-        //     },{
-        //         hotel_name:{$regex:req.query.hotel_name}
-        //     }
-        // ]}).limit(100).select("hotel_name address price hotel_images hotel_info hotel_facilities hotel_reviews");
-
-        // const hotels = await Hotel.find({ address: { $regex: req.query.address } }).limit(100).select("hotel_name address price hotel_images hotel_info hotel_facilities hotel_reviews");
-
-        // const hotels = await Hotel.find({ address: { $regex: req.query.address } })
-
-
-        // if (!hotels)
-        //     return res.status(404).json({
-        //         success: "failed",
-        //         message: "No hotels found"
-        //     })
-        // res.json({
-        //     status: "success",
-        //     count: hotels.length,
-        //     hotels
-        // })
-
         try {
-
             const allHotels = Hotel.find({ address: { $regex: req.query.address } })
-     
             const features = new APIfeatures(allHotels, req.query).paginating().sorting().searching().filtering()
 
             const result = await Promise.allSettled([
                 features.query,
                 Hotel.countDocuments() // count number of hotels
             ])
+
             const hotels = result[0].status === "fulfilled" ? result[0].value : [];
             const count = result[1].status === "fulfilled" ? result[1].value : 0;
 
-             if(hotels.length===0)
+            //total numbers of hotel found in all pagination
+            const totalHotels = await Hotel.find({ address: { $regex: req.query.address } }).countDocuments()
+
+
+            if (hotels.length === 0)
                 return res.status(404).json({
-                    status:"failed",
-                    message:"No hotel found"
+                    status: "failed",
+                    message: "No hotel found..."
                 })
-            
-            res.json({ status: 'success', "total":count,"found":hotels.length, hotels });
+
+            res.json({ status: 'success',msg:`${totalHotels} hotels found`, "total": count, "found": totalHotels, hotels });
         } catch (error) {
             return res.status(500).json({ status: "failed", msg: error.message })
         }
