@@ -28,6 +28,18 @@ const userCtrl = {
             return res.status(500).json({ msg: err.message })
         }
     },
+    updateUser: async (req, res) => {
+        try {
+            const { avatar, fullname, phone, address, email, gender } = req.body
+            if (!fullname) return res.status(400).json({ status: "failed", msg: "Please add your full name." })
+            await Users.findOneAndUpdate({ _id: req.user._id }, {
+                avatar, fullname, phone, address, email, gender
+            })
+            res.json({ status: "success", msg: "Update Success!" })
+        } catch (err) {
+            return res.status(500).json({ status: "failed", msg: err.message })
+        }
+    },
 }
 
 
