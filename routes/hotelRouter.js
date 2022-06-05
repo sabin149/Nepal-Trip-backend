@@ -17,5 +17,6 @@ router.patch("/approveHotel/:id",hotelCtrl.approveHotel)
 
 router.route("/hotel/:id")
 .get(hotelCtrl.getHotel)
+.patch(auth,authVendor,hotelCtrl.updateHotel)
 
 module.exports = router;
