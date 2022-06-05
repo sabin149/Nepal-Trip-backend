@@ -19,6 +19,7 @@ app.use(morgan("dev"));
 app.use("/api",require("./routes/authRouter"))
 app.use("/api",require("./routes/hotelRouter"))
 app.use("/api",require("./routes/roomRouter"))
+app.use("/api",require("./routes/userRouter"))
 
 const DATABASE_URL=process.env.DATABASE_URL;
 connectDb(DATABASE_URL);

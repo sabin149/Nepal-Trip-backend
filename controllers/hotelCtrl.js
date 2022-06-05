@@ -4,16 +4,35 @@ const hotelCtrl = {
 
     getHotels: async (req, res) => {
         try {
-            const features = new APIfeatures(Hotel.find(), req.query).paginating().sorting().searching().filtering();
+            const features = new APIfeatures(Hotel.find()
+            .populate('user')
+            .populate({
+                path: "rooms",
+                populate: {
+                    path: "room_type"
+                }
+            })
+                , req.query)
+                .paginating().sorting().searching().filtering();
 
             const result = await Promise.allSettled([
                 features.query,
-                Hotel.countDocuments() // count number of hotels
+                Hotel.countDocuments()
             ])
+            
+            const hotels = result[0].status === "fulfilled" ? result[0].value : []
 
-            const hotels = result[0].status === "fulfilled" ? result[0].value : [];
             const count = result[1].status === "fulfilled" ? result[1].value : 0;
-            // const hotels = await Hotel.find();
+            // const hotels = await Hotel.find()
+            // .populate("user")
+            // .populate({
+            //     path:"rooms",
+            //     populate:{
+            //         path:"room_type"
+            //     }
+            // });
+           
+
             res.json({ status: 'success', count, hotels });
         } catch (error) {
             return res.status(500).json({ status: "failed", msg: error.message })
@@ -98,7 +117,13 @@ const hotelCtrl = {
     },
     searchHotel: async (req, res) => {
         try {
-            const allHotels = Hotel.find({ address: { $regex: req.query.address } })
+            const allHotels = Hotel.find({ address: { $regex: req.query.address } }).populate('user')
+            .populate({
+                path: "rooms",
+                populate: {
+                    path: "room_type"
+                }
+            })
             const features = new APIfeatures(allHotels, req.query).paginating().sorting().searching().filtering()
 
             const result = await Promise.allSettled([
@@ -114,12 +139,12 @@ const hotelCtrl = {
 
 
             if (hotels.length === 0)
-                return res.status(404).json({
+                return res.json({
                     status: "failed",
-                    message: "No hotel found..."
+                    msg: "No hotel found..."
                 })
 
-            res.json({ status: 'success',msg:`${totalHotels} hotels found`, "total": count, "found": totalHotels, hotels });
+            res.json({ status: 'success', msg: `${totalHotels} hotels found`, "total": count, "found": totalHotels, hotels });
         } catch (error) {
             return res.status(500).json({ status: "failed", msg: error.message })
         }
@@ -132,6 +157,7 @@ const hotelCtrl = {
             return res.status(500).json({ status: "failed", msg: error.message })
         }
     },
+
 
 }
 module.exports = hotelCtrl
