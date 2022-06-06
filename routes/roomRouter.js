@@ -10,5 +10,6 @@ router.get("/getHotelRoom/:id",roomCtrl.getHotelRooms)
 
 router.route('/room/:id')
     .get(roomCtrl.getHotelRoom)
+    .patch (roomCtrl.updateHotelRoom)
 
 module.exports = router;
