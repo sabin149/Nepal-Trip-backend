@@ -5,6 +5,6 @@ const userCtrl = require("../controllers/userCtrl")
 router.get('/user', auth, userCtrl.getUsers)
 router.get('/user/:id', auth, userCtrl.getUser)
 router.patch('/user', auth, userCtrl.updateUser)
-
+router.patch('/updateuser/:id', auth, userCtrl.adminUpdateUser)
 
 module.exports = router

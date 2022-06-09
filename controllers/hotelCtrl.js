@@ -191,6 +191,5 @@ const hotelCtrl = {
         }
     },
 
-
 }
 module.exports = hotelCtrl
