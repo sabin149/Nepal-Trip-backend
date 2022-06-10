@@ -20,6 +20,7 @@ app.use("/api",require("./routes/authRouter"))
 app.use("/api",require("./routes/hotelRouter"))
 app.use("/api",require("./routes/roomRouter"))
 app.use("/api",require("./routes/userRouter"))
+app.use("/api",require("./routes/reviewRouter"))
 
 const DATABASE_URL=process.env.DATABASE_URL;
 connectDb(DATABASE_URL);
