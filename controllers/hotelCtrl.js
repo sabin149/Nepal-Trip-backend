@@ -135,7 +135,9 @@ const hotelCtrl = {
             const count = result[1].status === "fulfilled" ? result[1].value : 0;
 
             //total numbers of hotel found in all pagination
-            const totalHotels = await Hotel.find({ address: { $regex: req.query.address } }).countDocuments()
+            const totalValidHoltes = hotels.filter(hotel => hotel.hotel_validity === false).length
+     
+            const totalHotels = await Hotel.find({ address: { $regex: req.query.address } }).countDocuments()-totalValidHoltes
 
 
             if (hotels.length === 0)
@@ -162,19 +164,20 @@ const hotelCtrl = {
             const {
                 hotel_name, address, phone, hotel_email, pan_no, price, hotel_images, hotel_info, hotel_facilities, hotel_policies, hotel_validity
             } = req.body
-            const phoneNumber = await Hotel.findOne({ phone })
-            if (phoneNumber)
-                return res.status(400).json({ status: "failed", msg: "Phone number already registered." })
-            if (phone.length > 10 || phone.length < 10)
-                return res.status(400).json({ msg: "Please enter a valid phone number." })
-            if (pan_no.length > 8 || pan_no.length < 8)
-                return res.status(400).json({ msg: "Please enter a valid PAN number." })
-            if (hotel_images.length === 0)
-                return res.status(400).json({ msg: "Please add your hotel images." })
-            if (hotel_facilities.length === 0)
-                return res.status(400).json({ msg: "Please add your hotel facilities." })
-            if (hotel_policies.length === 0)
-                return res.status(400).json({ msg: "Please add your hotel policies." })
+            // const phoneNumber = await Hotel.findOne({ phone })
+            // if (phoneNumber)
+            //     return res.status(400).json({ status: "failed", msg: "Phone number already registered." })
+            // if (phone.length > 10 || phone.length < 10)
+            //     return res.status(400).json({ msg: "Please enter a valid phone number." })
+            // if (pan_no.length > 8 || pan_no.length < 8)
+            //     return res.status(400).json({ msg: "Please enter a valid PAN number." })
+            // if (hotel_images.length === 0)
+            //     return res.status(400).json({ msg: "Please add your hotel images." })
+            // if (hotel_facilities.length === 0)
+            //     return res.status(400).json({ msg: "Please add your hotel facilities." })
+            // if (hotel_policies.length === 0)
+            //     return res.status(400).json({ msg: "Please add your hotel policies." })
+            
             const hotel = await Hotel.findByIdAndUpdate(req.params.id, {
                 hotel_name, address, phone, hotel_email, pan_no, price, hotel_images, hotel_info, hotel_facilities, hotel_policies, hotel_validity
             })

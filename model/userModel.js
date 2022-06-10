@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema({
         // type: Number,
         // default: 0
         type: String,
-        enum : ['user',"vender",'admin'],
+        enum : ['user',"vendor",'admin'],
         default: 'user'
     },
 },
