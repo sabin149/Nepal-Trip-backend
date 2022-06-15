@@ -33,8 +33,6 @@ const userCtrl = {
     updateUser: async (req, res) => {
         try {
             const { avatar, username, fullname, phone, address, gender } = req.body
-
-
             if (!fullname) return res.status(400).json({ status: "failed", msg: "Please add your full name." })
             const updatedUser = await Users.findOneAndUpdate({ _id: req.user._id }, {
                 avatar, username, fullname, phone, address, gender
@@ -106,6 +104,5 @@ const userCtrl = {
         }
     }
 }
-
 module.exports = userCtrl;
 
