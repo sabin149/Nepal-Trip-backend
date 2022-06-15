@@ -22,8 +22,6 @@ app.use("/api",require("./routes/roomRouter"))
 app.use("/api",require("./routes/userRouter"))
 app.use("/api",require("./routes/reviewRouter"))
 app.use("/api",require("./routes/bookingRouter"))
-app.use("/api",require("./routes/bookingRouter"))
-
 
 
 

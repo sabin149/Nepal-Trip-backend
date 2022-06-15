@@ -123,6 +123,58 @@ const bookingSCtrl = {
             })
         }
     },
+    updateBooking: async (req, res) => {
+        try {
+            const {
+                name,
+                email, phone, address,
+                request } = req.body;
+            if (!name || !email || !phone || !address || !request) {
+                return res.status(400).json({
+                    "status": "failed",
+                    msg: "Please fill all the fields"
+                })
+            }
+            if (phone.length > 10 || phone.length < 10) {
+                return res.status(400).json({
+                    "status": "failed",
+                    msg: "Please enter a valid phone number"
+                })
+            }
+            if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
+                return res.status(400).json({
+                    "status": "failed",
+                    msg: "Please enter a valid email"
+                })
+            }
+            if (!email.includes('@gmail.com')) {
+                return res.status(400).json({
+                    "status": "failed",
+                    msg: "Please enter a valid email"
+                })
+            }
+            const booking = await Bookings.findByIdAndUpdate(req.params.id, {
+                user: req.user._id,
+                name,
+                email,
+                phone,
+                address,
+                request,
+            }, { new: true });
+            return res.json({
+                "status": "success",
+                msg: "Booking updated successfully",
+                booking: {
+                    ...booking._doc
+                }
+            })
+        } catch (error) {
+            return res.status(500).json({
+                "status": "failed",
+                msg: error.message
+            })
+        }
+    },
 
 
 
