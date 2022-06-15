@@ -7,7 +7,7 @@ const connectDb=(URI)=>{
             useUnifiedTopology: true 
         }, err => { 
             if(err) throw err;
-            console.log('Connected to mongodb')
+            console.log('Error connecting to mongodb')
         })
 }
  

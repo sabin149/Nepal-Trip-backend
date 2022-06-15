@@ -1,0 +1,90 @@
+const Hotels = require('../model/hotelModel');
+const Rooms = require('../model/roomModel');
+const Bookings = require('../model/bookingModel');
+const Users = require('../model/userModel');
+// const transporter  = require('../config/emailConfig');
+const { APIfeatures } = require('../lib/features');
+
+const bookingSCtrl = {
+    createBooking: async (req, res) => {
+        try {
+            const { room, hotel,
+                start_date, end_date,
+                total_amount, name,
+                email, phone, address,
+                request, tc, payment_id, payment_type } = req.body;
+
+            if (!room || !hotel || !start_date || !end_date || !total_amount || !name || !email || !phone || !address || !payment_id || !payment_type) {
+                return res.status(400).json({
+                    "status": "failed",
+                    msg: "Please fill all the fields"
+                })
+            }
+            if (!tc) {
+                return res.status(400).json({
+                    "status": "failed",
+                    msg: "Please accept the terms and conditions"
+                })
+            }
+
+            if (phone.length > 10 || phone.length < 10) {
+                return res.status(400).json({
+                    "status": "failed",
+                    msg: "Please enter a valid phone number"
+                })
+            }
+            if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
+                return res.status(400).json({
+                    "status": "failed",
+                    msg: "Please enter a valid email"
+                })
+            }
+            const booking = new Bookings({
+                user: req.user._id,
+                room,
+                hotel,
+                start_date,
+                end_date,
+                total_amount,
+                name,
+                email,
+                phone,
+                address,
+                request,
+                tc,
+                payment_id,
+                payment_type
+            })
+            await booking.save();
+
+            // const userEmail = await Users.findById(req.user._id).select("email");
+
+            // let info = await transporter.sendMail({
+            //     from: process.env.EMAIL_FROM,
+            //     to: userEmail,
+            //     subject: 'Booking Link',
+            //     html: `<h1>Your Bookings</h1>`
+            // });
+
+
+            return res.json({
+                "status": "success",
+                msg: "Booking created successfully",
+                booking: {
+                    ...booking._doc
+                },
+                info
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                "status": "failed",
+                msg: error.message
+            })
+
+        }
+    },
+
+}
+
+module.exports = bookingSCtrl;
