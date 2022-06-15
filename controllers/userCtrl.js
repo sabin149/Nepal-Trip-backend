@@ -68,6 +68,42 @@ const userCtrl = {
         } catch (err) {
             return res.status(500).json({ status: "failed", msg: err.message })
         }
+    },
+    deleteUser: async (req, res) => {
+        try {
+            const userId = req.params.id;
+            const user = await Users.findById(userId);
+            if (!user) return res.status(400).json({ status: "failed", msg: "User does not exist." })
+
+            await Users.findOneAndDelete({ _id: userId });
+            await Hotels.findOneAndDelete({ user: userId });
+            await Rooms.findOneAndDelete({ user: userId });
+            // await Bookings.findOneAndDelete({ user: userId });
+            // await Reviews.findOneAndDelete({ user: userId });
+            res.json({ status: "success", msg: "User Deleted Successfully" })
+        } catch (err) {
+            return res.status(500).json({ msg: err.message })
+        }
+    },
+    changeUserRole: async (req, res) => {
+        try {
+            const { role } = req.body;
+            if (!role)
+                return res.status(400).json({ status: "failed", msg: "Role field is required" })
+
+            if (role === "admin" || role === "user" || role === "vendor") {
+                const newUser = await Users.findByIdAndUpdate(req.params.id, { $set: { role } });
+                res.json({
+                    status: "success", msg: `Role changed to ${role} successfully`, newUser: {
+                        ...newUser._doc
+                    }
+                })
+            } else {
+                res.status(400).json({ status: "failed", msg: "This role does not exist" })
+            }
+        } catch (error) {
+            return res.status(500).json({ status: "failed", msg: error.message })
+        }
     }
 }
 

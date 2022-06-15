@@ -10,6 +10,7 @@ router.get("/getHotelRoom/:id",roomCtrl.getHotelRooms)
 
 router.route('/room/:id')
     .get(roomCtrl.getHotelRoom)
-    .patch (roomCtrl.updateHotelRoom)
+    .patch (auth,authVendor, roomCtrl.updateHotelRoom)
+    .delete(auth,roomCtrl.deleteHotelRoom)
 
 module.exports = router;
