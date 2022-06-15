@@ -44,7 +44,8 @@ const userSchema = new mongoose.Schema({
         // default: 0
         type: String,
         enum : ['user',"vendor",'admin'],
-        default: 'vendor'
+        default: 'user'
+
     },
 },
     {
