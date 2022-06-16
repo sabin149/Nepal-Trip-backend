@@ -1,8 +1,7 @@
 const Hotels = require('../model/hotelModel');
 const Rooms = require('../model/roomModel');
 const Bookings = require('../model/bookingModel');
-const Users = require('../model/userModel');
-// const transporter  = require('../config/emailConfig');
+const transporter  = require('../config/emailConfig');
 const { APIfeatures } = require('../lib/features');
 
 const bookingSCtrl = {
@@ -18,6 +17,21 @@ const bookingSCtrl = {
                 return res.status(400).json({
                     "status": "failed",
                     msg: "Please fill all the fields"
+                })
+            }
+            const hotelDetails = await Hotels.findById(hotel);
+            if (!hotelDetails) {
+                return res.status(400).json({
+                    "status": "failed",
+                    msg: "Hotel not found"
+                })
+            }
+
+            const roomDetails = await Rooms.findById(room);
+            if (!roomDetails) {
+                return res.status(400).json({
+                    "status": "failed",
+                    msg: "Room not found"
                 })
             }
             if (!tc) {
@@ -56,17 +70,38 @@ const bookingSCtrl = {
                 payment_type
             })
             await booking.save();
-
-            // const userEmail = await Users.findById(req.user._id).select("email");
-
-            // let info = await transporter.sendMail({
-            //     from: process.env.EMAIL_FROM,
-            //     to: userEmail,
-            //     subject: 'Booking Link',
-            //     html: `<h1>Your Bookings</h1>`
-            // });
-
-
+            
+            let info = await transporter.sendMail({
+                from: process.env.EMAIL_FROM,
+                // to: email,
+                to: "dangalsabin2025@gmail.com",
+                subject: 'Hotel Booking Details',
+                html: ` <div style="position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                height: 400px;
+                width: 600px;
+                background: #f2f2f2;
+                overflow: hidden;
+                border-radius: 20px;
+                cursor: pointer;
+                box-shadow: 0 0 20px 8px #d0d0d0; ">
+                    <h1 style=" text-decoration: underline; text-align: center;">Your Bookings Details</h1>
+                    <h3 style="margin-left: 20%;">Payment Id: ${payment_id}</h3>
+                    <h3 style="margin-left: 20%;">Hotel Name: ${hotelDetails.hotel_name}</h3>
+                    <h3 style="margin-left: 20%;">Room Name: ${roomDetails.room_type}</h3>
+                    <h3 style="margin-left: 20%;">Room Price: ${roomDetails.room_price}</h3> 
+                    <h3 style="margin-left: 20%;">Your Request: ${request}</h3>
+                    <h3 style="margin-left: 20%;">Start Date: ${start_date}</h3>
+                    <h3 style="margin-left: 20%;">End Date: ${end_date}</h3>
+                    <h3 style="margin-left: 20%;">Total Amount: ${total_amount}</h3>
+                    <h3 style="margin-left: 20%;">Your Name: ${name}</h3>
+                    <h3 style="margin-left: 20%;">Your Email: ${email}</h3>
+                    <h3 style="margin-left: 20%;">Your Phone: ${phone}</h3>
+                    <h3 style="margin-left: 20%;">Your Address: ${address}</h3>
+                    </div> `
+            });
             return res.json({
                 "status": "success",
                 msg: "Booking created successfully",
