@@ -1,15 +1,14 @@
 const mongoose= require("mongoose");
 
-const connectDb=async(DATABASE_URL)=>{
-    try {
-        const DB_OPTIONS={
-            dbName:"nepaltriptest"
-        }
-        await mongoose.connect(DATABASE_URL,DB_OPTIONS);
-        console.log("Database Connected Successfully....");
-    } catch (error) { 
-        console.log(error);
-    }
+const connectDb=(URI)=>{
+
+        mongoose.connect(URI, {
+            useNewUrlParser: true,  
+            useUnifiedTopology: true 
+        }, err => { 
+            if(err) throw err;
+            console.log('Connected to mongodb')
+        })
 }
  
-module.exports=connectDb
+module.exports=connectDb 

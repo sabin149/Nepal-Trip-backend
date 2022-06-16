@@ -15,6 +15,8 @@ const userSchema = new mongoose.Schema({
     }, gender: {
         type: String,
         enum : ['Male',"Female",'Other'],
+        default:"Male"
+
     }, address: {
         type: String, default: '',
     },
@@ -38,17 +40,15 @@ const userSchema = new mongoose.Schema({
     },
     favourites: [{ type: mongoose.Types.ObjectId, ref: 'hotel' }],
     role: {
-        // type: Number,
-        // default: 0
         type: String,
-        enum : ['user',"vender",'admin'],
-        default: 'user'
+        enum : ['user',"vendor",'admin'],
+        default: 'user',
     },
 },
     {
         timestamps: true
     });
-// module.exports = mongoose.model("user", userSchema)
+
 userSchema.index({ username: "text" })
 const Users = mongoose.model("user", userSchema)
 Users.createIndexes({ username: "text" })
