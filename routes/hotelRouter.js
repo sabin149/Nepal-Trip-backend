@@ -9,7 +9,7 @@ router.get("/search",hotelCtrl.searchHotel)
 
 router.route("/hotel")
 .post(auth,authVendor, hotelCtrl.createHotel)
-.get(auth, hotelCtrl.getHotels)
+.get( hotelCtrl.getHotels)
 .get(auth, hotelCtrl.searchHotel)
 
 // router.patch("/approveHotel/:id",auth,authAdmin,hotelCtrl.approveHotel)
