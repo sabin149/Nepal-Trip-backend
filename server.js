@@ -8,6 +8,7 @@ const connectDb=require("./config/connectdb")
 
 const app=express();
 
+
 app.use(express.urlencoded({extended:true})); 
 app.use(bodyParser.json());
 app.use(cors()); 
@@ -19,13 +20,6 @@ app.use("/api",require("./routes/authRouter"))
 app.use("/api",require("./routes/hotelRouter"))
 app.use("/api",require("./routes/roomRouter"))
 app.use("/api",require("./routes/userRouter"))
-<<<<<<< Updated upstream
-app.use("/api",require("./routes/reviewRouter"))
-app.use("/api",require("./routes/bookingRouter"))
-
-=======
->>>>>>> Stashed changes
-
 
 const DATABASE_URL=process.env.DATABASE_URL;
 connectDb(DATABASE_URL);
