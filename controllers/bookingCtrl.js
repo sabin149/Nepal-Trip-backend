@@ -5,14 +5,23 @@ const transporter  = require('../config/emailConfig');
 const { APIfeatures } = require('../lib/features');
 
 const bookingSCtrl = {
-    createBooking: async (req, res) => {
-        try {
-            const { room, hotel,
-                start_date, end_date,
-                total_amount, name,
-                email, phone, address,
-                request, tc, payment_id, payment_type } = req.body;
-
+  createBooking: async (req, res) => {
+    try {
+      const {
+        room,
+        hotel,
+        start_date,
+        end_date,
+        total_amount,
+        name,
+        email,
+        phone,
+        address,
+        request,
+        tc,
+        payment_id,
+        payment_type,
+      } = req.body
             if (!room || !hotel || !start_date || !end_date || !total_amount || !name || !email || !phone || !address || !payment_id || !payment_type) {
                 return res.status(400).json({
                     "status": "failed",
@@ -215,4 +224,5 @@ const bookingSCtrl = {
 
 }
 
-module.exports = bookingSCtrl;
+module.exports = bookingCtrl;
+
