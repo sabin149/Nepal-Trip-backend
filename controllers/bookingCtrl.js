@@ -119,6 +119,7 @@ const bookingSCtrl = {
 
         }
     },
+    // get bookings api
     getBookings: async (req, res) => {
         try {
             const features = new APIfeatures(Bookings.find().populate('user').
@@ -142,6 +143,7 @@ const bookingSCtrl = {
             })
         }
     },
+    // this is bookinng api: 
     getBooking: async (req, res) => {
         try {
             const booking = await Bookings.findById(req.params.id).populate('user').
@@ -158,6 +160,7 @@ const bookingSCtrl = {
             })
         }
     },
+    // update bookings api
     updateBooking: async (req, res) => {
         try {
             const {
