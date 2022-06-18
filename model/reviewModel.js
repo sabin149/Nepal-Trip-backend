@@ -6,9 +6,8 @@ const reviewSchema = new mongoose.Schema({
             // required: true,
         },
         hotel_rating: {
+            //number of start given by the user
             type: Number,
-            // enum: ['0', '1', "2", '3', '4', '5'],
-            // default: '0'
             min: 1,
             max: 5,
             default: 0
