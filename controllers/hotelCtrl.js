@@ -153,7 +153,14 @@ const hotelCtrl = {
     },
     getHotel: async (req, res) => {
         try {
-            const hotel = await Hotel.findById(req.params.id);
+            const hotel = await Hotel.findById(req.params.id).populate('user')
+            .populate({
+                path: "rooms",
+                populate: {
+                    path: "room_type"
+                }
+            })
+            
             res.json({ status: 'success', hotel });
         } catch (error) {
             return res.status(500).json({ status: "failed", msg: error.message })
