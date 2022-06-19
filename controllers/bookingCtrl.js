@@ -83,8 +83,8 @@ const bookingCtrl = {
 
             let info = await transporter.sendMail({
                 from: process.env.EMAIL_FROM,
-                // to: email,
-                to: "dangalsabin2025@gmail.com",
+                to: email,
+                // to: "dangalsabin2025@gmail.com",
                 subject: 'Hotel Booking Details',
                 html: ` <div style="position: absolute;
                 left: 50%;
