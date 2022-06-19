@@ -3,6 +3,7 @@ const Rooms = require('../model/roomModel');
 const Bookings = require('../model/bookingModel');
 const transporter = require('../config/emailConfig');
 const { APIfeatures } = require('../lib/features');
+
 const bookingCtrl = {
     createBooking: async (req, res) => {
         try {
@@ -21,6 +22,7 @@ const bookingCtrl = {
                 payment_id,
                 payment_type,
             } = req.body
+
             if (!room || !hotel || !start_date || !end_date || !total_amount || !name || !email || !phone || !address || !payment_id || !payment_type) {
                 return res.status(400).json({
                     "status": "failed",
@@ -76,10 +78,11 @@ const bookingCtrl = {
                 payment_type
             })
             await booking.save();
+
             let info = await transporter.sendMail({
                 from: process.env.EMAIL_FROM,
-                // to: email,
-                to: "dangalsabin2025@gmail.com",
+                to: email,
+                // to: "dangalsabin2025@gmail.com",
                 subject: 'Hotel Booking Details',
                 html: ` <div style="position: absolute;
                 left: 50%;
@@ -216,5 +219,5 @@ const bookingCtrl = {
             })
         }
     },
-}
+
 module.exports = bookingCtrl;

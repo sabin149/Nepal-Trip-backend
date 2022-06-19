@@ -54,7 +54,6 @@ const bookingSchema = new mongoose.Schema({
     payment_type:{
         type: String,
         required: true,
-        default:"khalti"
     },
 
 })
