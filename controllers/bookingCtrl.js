@@ -219,5 +219,5 @@ const bookingCtrl = {
             })
         }
     },
-
+}
 module.exports = bookingCtrl;
