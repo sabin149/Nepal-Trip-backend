@@ -1,29 +1,26 @@
 const Hotels = require('../model/hotelModel');
 const Rooms = require('../model/roomModel');
 const Bookings = require('../model/bookingModel');
-const transporter  = require('../config/emailConfig');
+const transporter = require('../config/emailConfig');
 const { APIfeatures } = require('../lib/features');
-
-
-// This api is boking details
 const bookingCtrl = {
-  createBooking: async (req, res) => {
-    try {
-      const {
-        room,
-        hotel,
-        start_date,
-        end_date,
-        total_amount,
-        name,
-        email,
-        phone,
-        address,
-        request,
-        tc,
-        payment_id,
-        payment_type,
-      } = req.body
+    createBooking: async (req, res) => {
+        try {
+            const {
+                room,
+                hotel,
+                start_date,
+                end_date,
+                total_amount,
+                name,
+                email,
+                phone,
+                address,
+                request,
+                tc,
+                payment_id,
+                payment_type,
+            } = req.body
             if (!room || !hotel || !start_date || !end_date || !total_amount || !name || !email || !phone || !address || !payment_id || !payment_type) {
                 return res.status(400).json({
                     "status": "failed",
@@ -37,7 +34,6 @@ const bookingCtrl = {
                     msg: "Hotel not found"
                 })
             }
-
             const roomDetails = await Rooms.findById(room);
             if (!roomDetails) {
                 return res.status(400).json({
@@ -51,7 +47,6 @@ const bookingCtrl = {
                     msg: "Please accept the terms and conditions"
                 })
             }
-
             if (phone.length > 10 || phone.length < 10) {
                 return res.status(400).json({
                     "status": "failed",
@@ -81,7 +76,6 @@ const bookingCtrl = {
                 payment_type
             })
             await booking.save();
-            
             let info = await transporter.sendMail({
                 from: process.env.EMAIL_FROM,
                 // to: email,
@@ -115,21 +109,20 @@ const bookingCtrl = {
             });
             return res.json({
                 "status": "success",
-                msg: "Booking created successfully",
+                msg: "Booking created successfully, Check your Email for more details",
                 booking: {
                     ...booking._doc
                 },
                 info
             })
-
         } catch (error) {
             return res.status(500).json({
                 "status": "failed",
                 msg: error.message
             })
-
         }
     },
+    // get bookings api
     getBookings: async (req, res) => {
         try {
             const features = new APIfeatures(Bookings.find().populate('user').
@@ -153,6 +146,7 @@ const bookingCtrl = {
             })
         }
     },
+    // this is bookinng api: 
     getBooking: async (req, res) => {
         try {
             const booking = await Bookings.findById(req.params.id).populate('user').
@@ -169,6 +163,7 @@ const bookingCtrl = {
             })
         }
     },
+    // update bookings api
     updateBooking: async (req, res) => {
         try {
             const {
@@ -221,10 +216,5 @@ const bookingCtrl = {
             })
         }
     },
-
-
-
 }
-
 module.exports = bookingCtrl;
-
