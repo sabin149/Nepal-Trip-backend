@@ -218,6 +218,7 @@ const bookingCtrl = {
                 msg: error.message
             })
         }
-    },
+    }
+}
 
 module.exports = bookingCtrl;
