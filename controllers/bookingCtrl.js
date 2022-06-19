@@ -36,7 +36,6 @@ const bookingCtrl = {
                     msg: "Hotel not found"
                 })
             }
-
             const roomDetails = await Rooms.findById(room);
             if (!roomDetails) {
                 return res.status(400).json({
@@ -50,7 +49,6 @@ const bookingCtrl = {
                     msg: "Please accept the terms and conditions"
                 })
             }
-
             if (phone.length > 10 || phone.length < 10) {
                 return res.status(400).json({
                     "status": "failed",
@@ -120,13 +118,11 @@ const bookingCtrl = {
                 },
                 info
             })
-
         } catch (error) {
             return res.status(500).json({
                 "status": "failed",
                 msg: error.message
             })
-
         }
     },
     // get bookings api
@@ -223,9 +219,5 @@ const bookingCtrl = {
             })
         }
     },
-
-
-
-}
 
 module.exports = bookingCtrl;
