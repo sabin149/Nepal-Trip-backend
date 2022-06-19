@@ -5,7 +5,9 @@ const Users = require("../model/userModel");
 // const transporter  = require('../config/emailConfig');
 const { APIfeatures } = require("../lib/features");
 
-const bookingSCtrl = {
+
+// This api is boking details
+const bookingCtrl = {
   createBooking: async (req, res) => {
     try {
       const {
@@ -127,6 +129,7 @@ const bookingSCtrl = {
       });
     }
   },
+//   get booking details
   getBooking: async (req, res) => {
     try {
       const booking = await Bookings.findById(req.params.id)
@@ -200,4 +203,4 @@ const bookingSCtrl = {
   },
 };
 
-module.exports = bookingSCtrl;
+module.exports = bookingCtrl;
