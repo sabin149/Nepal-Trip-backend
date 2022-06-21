@@ -219,6 +219,29 @@ const bookingCtrl = {
                 msg: error.message
             })
         }
+    },
+    deleteBooking: async (req, res) => {
+        try {
+            const booking = await Bookings.findByIdAndDelete(req.params.id);
+            if (!booking) {
+                return res.status(404).json({
+                    "status": "failed",
+                    msg: "Booking not found"
+                })
+            }
+            return res.json({
+                "status": "success",
+                msg: "Booking deleted successfully",
+                booking: {
+                    ...booking._doc
+                },
+            })
+        } catch (error) {
+            return res.status(500).json({
+                "status": "failed",
+                msg: error.message
+            })
+        }
     }
 }
 
