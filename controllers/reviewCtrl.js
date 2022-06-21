@@ -39,6 +39,36 @@ const reviewCtrl = {
         } catch (error) {
             res.status(500).json({ status: "failed", msg: error.message });
         }
+    },
+    createReview: async (req, res) => {
+        try {
+            const { hotelId, review, tag, reply, hotelUserId } = req.body;
+            const hotel = await Hotel.findById(hotelId);
+            if (!hotel)
+                return res.status(404).json({ status: "failed", msg: 'Hotel not found' });
+            if (reply) {
+                const review = await Review.findById(reply);
+                if (!review)
+                    return res.status(404).json({ status: "failed", msg: 'Review not found' });
+            }
+            const newReview = new Review({
+                user: req.user._id,
+                review,
+                tag,
+                reply,
+                hotelId,
+                hotelUserId
+            })
+            await Hotel.findOneAndUpdate(
+                { _id: hotelId },
+                { $push: { hotel_reviews: newReview._id } },
+                { new: true }
+            );
+            await newReview.save();
+            res.json({ status: "success", msg: 'Review created successfully', newReview });
+        } catch (error) {
+            res.status(500).json({ status: "failed", msg: error.message });
+        }
     }
 }
 module.exports = reviewCtrl;
