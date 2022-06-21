@@ -1,3 +1,5 @@
+// all booking models are included here
+
 const mongoose=require("mongoose")
 
 const bookingSchema = new mongoose.Schema({

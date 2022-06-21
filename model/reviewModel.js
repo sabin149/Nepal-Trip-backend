@@ -1,3 +1,5 @@
+// all review models are included here
+
 const mongoose = require("mongoose")
 
 const reviewSchema = new mongoose.Schema({
