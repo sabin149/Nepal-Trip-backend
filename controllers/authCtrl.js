@@ -5,7 +5,7 @@ const authCtrl = {
 
     register: async (req, res) => {
         try {
-            const { fullname, username, gender, phone, email, password, password_confirmation } = req.body;
+            const { fullname, username, gender, phone, email, password, password_confirmation, role } = req.body;
             let newUserName = username.toLowerCase().replace(/ /g, '')
             const user_name = await Users.findOne({ username: newUserName })
             if (user_name) return res.status(400).json({ status: "failed", msg: "This user name already exist." })
@@ -16,12 +16,15 @@ const authCtrl = {
             if (user_email) return res.status(400).json({ status: "failed", msg: "This email already exist." })
             if (password.length < 6)
                 return res.status(400).json({ status: "failed", msg: "Password must be at least 6 characters." })
-            if (password !== password_confirmation) return res.status(400).json({ status: "failed", msg: "Password and Confirmation Password Doesn't Match" }) 
+            if (password !== password_confirmation) return res.status(400).json({ status: "failed", msg: "Password and Confirmation Password Doesn't Match" });
+            if(!role)
+            return res.status(400).json({ status: "failed", msg: "User role is required" });
+    
             const passwordHash = await bcrypt.hash(password, 12)
             const newUser = new Users({
-                fullname, username: newUserName, gender, phone, email, password: passwordHash
+                fullname, username: newUserName, gender, phone, email, password: passwordHash, role,
             })
-       
+
             const access_token = createAccessToken({ id: newUser._id })
             const refresh_token = createRefreshToken({ id: newUser._id })
             res.cookie('refreshtoken', refresh_token, {
@@ -46,16 +49,16 @@ const authCtrl = {
     login: async (req, res) => {
         try {
             const { email, password } = req.body
-            const user = await Users.findOne({email})
-            if(!user) return res.status(400).json({status: "failed",msg: "This email does not exist."})
+            const user = await Users.findOne({ email })
+            if (!user) return res.status(400).json({ status: "failed", msg: "This email does not exist." })
             const isMatch = await bcrypt.compare(password, user.password)
-            if(!isMatch) return res.status(400).json({status: "failed",msg: "Password is incorrect."})
-            const access_token = createAccessToken({id: user._id}) 
-            const refresh_token = createRefreshToken({id: user._id})
+            if (!isMatch) return res.status(400).json({ status: "failed", msg: "Password is incorrect." })
+            const access_token = createAccessToken({ id: user._id })
+            const refresh_token = createRefreshToken({ id: user._id })
             res.cookie('refreshtoken', refresh_token, {
                 httpOnly: true,
                 path: '/api/refresh_token',
-                maxAge: 30*24*60*60*1000 // 30days
+                maxAge: 30 * 24 * 60 * 60 * 1000 // 30days
             })
             res.json({
                 status: "success",
@@ -67,25 +70,25 @@ const authCtrl = {
                 }
             })
         } catch (err) {
-            return res.status(500).json({msg: err.message})
+            return res.status(500).json({ msg: err.message })
         }
     },
     logout: async (req, res) => {
         try {
-            res.clearCookie('refreshtoken', {path: '/api/refresh_token'})
-            return res.json({status: "success",msg: "Logged out!"})
+            res.clearCookie('refreshtoken', { path: '/api/refresh_token' })
+            return res.json({ status: "success", msg: "Logged out!" })
         } catch (err) {
-            return res.status(500).json({status: "failed",msg: err.message})
+            return res.status(500).json({ status: "failed", msg: err.message })
         }
     },
     generateAccessToken: async (req, res) => {
         try {
             const rf_token = req.cookies.refreshtoken
-            if (!rf_token) return res.status(400).json({status: "failed", msg: "Please login now." })
+            if (!rf_token) return res.status(400).json({ status: "failed", msg: "Please login now." })
             jwt.verify(rf_token, process.env.REFRESH_TOKEN_SECRET, async (err, result) => {
-                if (err) return res.status(400).json({status: "failed", msg: "Please login now." })
+                if (err) return res.status(400).json({ status: "failed", msg: "Please login now." })
                 const user = await Users.findById(result.id).select("-password")
-                if (!user) return res.status(400).json({status: "failed", msg: "This does not exist." })
+                if (!user) return res.status(400).json({ status: "failed", msg: "This does not exist." })
                 const access_token = createAccessToken({ id: result.id })
                 res.json({
                     status: "success",

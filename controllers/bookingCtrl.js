@@ -25,39 +25,39 @@ const bookingCtrl = {
 
             if (!room || !hotel || !start_date || !end_date || !total_amount || !name || !email || !phone || !address || !payment_id || !payment_type) {
                 return res.status(400).json({
-                    "status": "failed",
+                    status: "failed",
                     msg: "Please fill all the fields"
                 })
             }
             const hotelDetails = await Hotels.findById(hotel);
             if (!hotelDetails) {
                 return res.status(400).json({
-                    "status": "failed",
+                    status: "failed",
                     msg: "Hotel not found"
                 })
             }
             const roomDetails = await Rooms.findById(room);
             if (!roomDetails) {
                 return res.status(400).json({
-                    "status": "failed",
+                    status: "failed",
                     msg: "Room not found"
                 })
             }
             if (!tc) {
                 return res.status(400).json({
-                    "status": "failed",
+                    status: "failed",
                     msg: "Please accept the terms and conditions"
                 })
             }
             if (phone.length > 10 || phone.length < 10) {
                 return res.status(400).json({
-                    "status": "failed",
+                    status: "failed",
                     msg: "Please enter a valid phone number"
                 })
             }
             if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
                 return res.status(400).json({
-                    "status": "failed",
+                    status: "failed",
                     msg: "Please enter a valid email"
                 })
             }
@@ -111,7 +111,7 @@ const bookingCtrl = {
                     </div> `
             });
             return res.json({
-                "status": "success",
+                status: "success",
                 msg: "Booking created successfully, Check your Email for more details",
                 booking: {
                     ...booking._doc
@@ -120,7 +120,7 @@ const bookingCtrl = {
             })
         } catch (error) {
             return res.status(500).json({
-                "status": "failed",
+                status: "failed",
                 msg: error.message
             })
         }
@@ -138,13 +138,13 @@ const bookingCtrl = {
             const bookings = result[0].status === "fulfilled" ? result[0].value : []
             const count = result[1].status === "fulfilled" ? result[1].value : 0;
             return res.json({
-                "status": "success",
+                status: "success",
                 count,
                 bookings
             })
         } catch (error) {
             return res.status(500).json({
-                "status": "failed",
+                status: "failed",
                 msg: error.message
             })
         }
@@ -156,12 +156,12 @@ const bookingCtrl = {
                 populate('room').
                 populate('hotel');
             return res.json({
-                "status": "success",
+                status: "success",
                 booking
             })
         } catch (error) {
             return res.status(500).json({
-                "status": "failed",
+                status: "failed",
                 msg: error.message
             })
         }
@@ -173,30 +173,31 @@ const bookingCtrl = {
                 name,
                 email, phone, address,
                 request } = req.body;
-            if (!name || !email || !phone || !address || !request) {
+            if (!name || !email || !phone || !address) {
                 return res.status(400).json({
-                    "status": "failed",
+                    status: "failed",
                     msg: "Please fill all the fields"
                 })
             }
             if (phone.length > 10 || phone.length < 10) {
                 return res.status(400).json({
-                    "status": "failed",
+                    status: "failed",
                     msg: "Please enter a valid phone number"
                 })
             }
             if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
                 return res.status(400).json({
-                    "status": "failed",
+                    status: "failed",
                     msg: "Please enter a valid email"
                 })
             }
             if (!email.includes('@gmail.com')) {
                 return res.status(400).json({
-                    "status": "failed",
+                    status: "failed",
                     msg: "Please enter a valid email"
                 })
             }
+
             const booking = await Bookings.findByIdAndUpdate(req.params.id, {
                 user: req.user._id,
                 name,
@@ -206,7 +207,7 @@ const bookingCtrl = {
                 request,
             }, { new: true });
             return res.json({
-                "status": "success",
+                status: "success",
                 msg: "Booking updated successfully",
                 booking: {
                     ...booking._doc
@@ -214,7 +215,7 @@ const bookingCtrl = {
             })
         } catch (error) {
             return res.status(500).json({
-                "status": "failed",
+                status: "failed",
                 msg: error.message
             })
         }
