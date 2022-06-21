@@ -1,3 +1,5 @@
+// all hotel models are included here
+
 const mongoose = require("mongoose")
 const hotelSchema = new mongoose.Schema({
     hotel_name: {

@@ -1,3 +1,5 @@
+// all room models are included here
+
 const mongoose = require("mongoose")
 const roomSchema = new mongoose.Schema({
     room_type:{
