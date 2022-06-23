@@ -5,14 +5,14 @@ let transporter = nodemailer.createTransport({
     service: 'gmail',
     host: process.env.EMAIL_HOST,
     port: process.env.EMAIL_PORT,
-    secure: false,
+    secure: true,
     auth: {
-        type: 'OAuth2',
+        // type: 'OAuth2',
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
-        clientId: process.env.AUTH_CLIENT_ID,
-        clientSecret: process.env.AUTH_CLIENT_SECRET,
-        refreshToken: process.env.AUTH_REFRESH_TOKEN
+        // clientId: process.env.AUTH_CLIENT_ID,
+        // clientSecret: process.env.AUTH_CLIENT_SECRET,
+        // refreshToken: process.env.AUTH_REFRESH_TOKEN
     },
 });
 transporter.verify((err, success) => {

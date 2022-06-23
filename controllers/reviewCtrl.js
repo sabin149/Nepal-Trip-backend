@@ -42,10 +42,12 @@ const reviewCtrl = {
     },
     createReview: async (req, res) => {
         try {
-            const { hotelId, review, tag, reply, hotelUserId } = req.body;
+            const { hotelId, review, hotel_rating, tag, reply, hotelUserId } = req.body;
             const hotel = await Hotel.findById(hotelId);
             if (!hotel)
                 return res.status(404).json({ status: "failed", msg: 'Hotel not found' });
+            if (hotel_rating > 5 || hotel_rating < 1)
+                return res.status(400).json({ status: "failed", msg: "Please add valid rating" })
             if (reply) {
                 const review = await Review.findById(reply);
                 if (!review)
@@ -54,6 +56,7 @@ const reviewCtrl = {
             const newReview = new Review({
                 user: req.user._id,
                 review,
+                hotel_rating,
                 tag,
                 reply,
                 hotelId,
