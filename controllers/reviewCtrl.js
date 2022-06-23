@@ -69,7 +69,42 @@ const reviewCtrl = {
         } catch (error) {
             res.status(500).json({ status: "failed", msg: error.message });
         }
-    }
+    },
+    getReviews: async (req, res) => {
+        try {
+            const features = new APIfeatures(Review.find(), req.query).paginating().sorting().searching().filtering();
+            const result = await Promise.allSettled([
+                features.query,
+                Review.countDocuments() // count number of hotels
+            ])
+            const reviews = result[0].status === "fulfilled" ? result[0].value : [];
+            const count = result[1].status === "fulfilled" ? result[1].value : 0;
+            // const hotels = await Hotel.find();
+            res.json({ status: 'success', count, reviews });
+        } catch (error) {
+            res.status(500).json({ status: "failed", msg: error.message });
+        }
+    },
+    getReviewsByHotel: async (req, res) => {
+        try {
+            const features = new APIfeatures(Review.find({ hotelId: req.params.id })
+                .populate('user'),
+                req.query).sorting()
+            const result = await Promise.allSettled([
+                features.query,
+                Review.countDocuments()
+            ])
+            const reviews = result[0].status === "fulfilled" ? result[0].value : []
+            const count = result[1].status === "fulfilled" ? result[1].value : 0;
+            return res.json({
+                "status": "success",
+                count,
+                reviews
+            })
+        } catch (error) {
+            res.status(500).json({ status: "failed", msg: error.message });
+        }
+    },
 }
 module.exports = reviewCtrl;
 
