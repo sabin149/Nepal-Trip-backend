@@ -42,23 +42,26 @@ const reviewCtrl = {
     },
     createReview: async (req, res) => {
         try {
-            const { hotelId, review, hotel_rating, tag, reply, hotelUserId } = req.body;
+            const { hotelId, review, hotel_rating, hotelUserId } = req.body;
+            console.log({ hotelId, review, hotel_rating, hotelUserId });
             const hotel = await Hotel.findById(hotelId);
             if (!hotel)
                 return res.status(404).json({ status: "failed", msg: 'Hotel not found' });
+            if(!hotel_rating)
+                return res.status(400).json({ status: "failed", msg: 'Please add the rating' });
+            if(!review)
+                return res.status(400).json({ status: "failed", msg: 'Please add the review' });
             if (hotel_rating > 5 || hotel_rating < 1)
                 return res.status(400).json({ status: "failed", msg: "Please add valid rating" })
-            if (reply) {
-                const review = await Review.findById(reply);
-                if (!review)
-                    return res.status(404).json({ status: "failed", msg: 'Review not found' });
-            }
+            // if (reply) {
+            //     const review = await Review.findById(reply);
+            //     if (!review)
+            //         return res.status(404).json({ status: "failed", msg: 'Review not found' });
+            // }
             const newReview = new Review({
                 user: req.user._id,
                 review,
                 hotel_rating,
-                tag,
-                reply,
                 hotelId,
                 hotelUserId
             })
@@ -75,7 +78,10 @@ const reviewCtrl = {
     },
     getReviews: async (req, res) => {
         try {
-            const features = new APIfeatures(Review.find(), req.query).paginating().sorting().searching().filtering();
+            const features = new APIfeatures(Review.find()
+                .populate('user')
+            
+            , req.query).sorting().searching().filtering();
             const result = await Promise.allSettled([
                 features.query,
                 Review.countDocuments() // count number of hotels
