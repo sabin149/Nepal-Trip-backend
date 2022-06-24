@@ -1,10 +1,12 @@
-// all hotel models are included here
-
 const mongoose = require("mongoose")
 const hotelSchema = new mongoose.Schema({
     hotel_name: {
         type: String,
         required: true,
+    },
+    rating:{
+        type:Number,
+        required:true,
     },
     address: {
         type: String,
@@ -44,20 +46,7 @@ const hotelSchema = new mongoose.Schema({
         type: Array,
         required: true
     },
-    // hotel_reviews: {
-    //     type: String,
-    //     required: true
-    // },
     hotel_reviews: [{ type: mongoose.Types.ObjectId, ref: 'review' }],
-    // hotel_rating: {
-    //     role: {
-    //         // type: Number,
-    //         // default: 0
-    //         type: Number,
-    //         enum: ['0', '1', "2", '3', '4', '5'],
-    //         default: '0'
-    //     },
-    // },
     rooms: [{ type: mongoose.Types.ObjectId, ref: 'room' }],
     hotel_validity: {
         type: Boolean,

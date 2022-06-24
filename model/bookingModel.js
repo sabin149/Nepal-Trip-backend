@@ -1,7 +1,4 @@
-// all booking models are included here
-
 const mongoose=require("mongoose")
-//booking schema  for booking table  in database 
 const bookingSchema = new mongoose.Schema({
     room:{
         type: mongoose.Types.ObjectId,ref:"room"

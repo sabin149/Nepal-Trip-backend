@@ -166,6 +166,32 @@ const bookingCtrl = {
             })
         }
     },
+    getBookingByHotel: async (req, res) => {
+        try {
+            const features = new APIfeatures(Bookings.find({hotel: req.params.id }).populate('user').
+                populate('room').
+                populate('hotel'), req.query).sorting()
+            const result = await Promise.allSettled([
+                features.query,
+                Bookings.countDocuments()
+            ])
+            const bookings = result[0].status === "fulfilled" ? result[0].value : []
+            const count = result[1].status === "fulfilled" ? result[1].value : 0;
+
+            const realCount = bookings.length;
+            return res.json({
+                status: "success",
+                count,
+                realCount,
+                bookings
+            })
+        } catch (error) {
+            return res.status(500).json({
+                status: "failed",
+                msg: error.message
+            })
+        }
+    },
     // update bookings api
     updateBooking: async (req, res) => {
         try {

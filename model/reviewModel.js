@@ -10,9 +10,6 @@ const reviewSchema = new mongoose.Schema({
         hotel_rating: {
             //number of start given by the user
             type: Number,
-            min: 1,
-            max: 5,
-            default: 0
         },
         tag: Object, 
         reply: mongoose.Types.ObjectId,
