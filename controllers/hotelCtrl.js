@@ -1,7 +1,6 @@
 const Hotel = require('../model/hotelModel');
 const { APIfeatures } = require('../lib/features');
 const hotelCtrl = {
-
     getHotels: async (req, res) => {
         try {
             const features = new APIfeatures(Hotel.find()
@@ -14,15 +13,12 @@ const hotelCtrl = {
                 })
                 , req.query)
                 .paginating().sorting().searching().filtering();
-
             const result = await Promise.allSettled([
                 features.query,
                 Hotel.countDocuments()
             ])
-
             const hotels = result[0].status === "fulfilled" ? result[0].value : []
             const count = result[1].status === "fulfilled" ? result[1].value : 0;
-
             res.json({ status: 'success', count, hotels });
         } catch (error) {
             return res.status(500).json({ status: "failed", msg: error.message })
@@ -80,12 +76,10 @@ const hotelCtrl = {
     approveHotel: async (req, res) => {
         try {
             const hotel = await Hotel.findOne({ _id: req.params.id })
-
             if (hotel.hotel_validity === false) {
                 const newHotel = await Hotel.findOneAndUpdate({ _id: hotel._id }, {
                     hotel_validity: true
                 }, { new: true })
-
                 res.json({
                     status: "success",
                     msg: "Hotel approved!",
@@ -105,7 +99,6 @@ const hotelCtrl = {
                     }
                 })
             }
-
         } catch (error) {
             return res.status(500).json({ status: "failed", msg: error.message })
         }
@@ -120,27 +113,20 @@ const hotelCtrl = {
                     }
                 })
             const features = new APIfeatures(allHotels, req.query).paginating().sorting().searching().filtering()
-
             const result = await Promise.allSettled([
                 features.query,
                 Hotel.countDocuments() // count number of hotels
             ])
-
             const hotels = result[0].status === "fulfilled" ? result[0].value : [];
             const count = result[1].status === "fulfilled" ? result[1].value : 0;
-
             //total numbers of hotel found in all pagination
             const totalValidHoltes = hotels.filter(hotel => hotel.hotel_validity === false).length
-
             const totalHotels = await Hotel.find({ address: { $regex: req.query.address } }).countDocuments() - totalValidHoltes
-
-
             if (hotels.length === 0)
                 return res.json({
                     status: "failed",
                     msg: "No hotel found..."
                 })
-
             res.json({ status: 'success', msg: `${totalHotels} hotels found`, "total": count, "found": totalHotels, hotels });
         } catch (error) {
             return res.status(500).json({ status: "failed", msg: error.message })
@@ -155,7 +141,6 @@ const hotelCtrl = {
                         path: "room_type"
                     }
                 }).populate("hotel_reviews")
-
             res.json({ status: 'success', hotel });
         } catch (error) {
             return res.status(500).json({ status: "failed", msg: error.message })
@@ -184,7 +169,6 @@ const hotelCtrl = {
                 return res.status(400).json({ msg: "Please add your hotel facilities." })
             if (hotel_policies.length === 0)
                 return res.status(400).json({ msg: "Please add your hotel policies." })
-
             const hotel = await Hotel.findByIdAndUpdate(req.params.id, {
                 hotel_name, rating, address, phone, hotel_email, pan_no, price, hotel_images, hotel_info, hotel_facilities, hotel_policies, hotel_validity
             })
@@ -200,6 +184,5 @@ const hotelCtrl = {
             return res.status(500).json({ status: "failed", msg: error.message })
         }
     },
-
 }
 module.exports = hotelCtrl
