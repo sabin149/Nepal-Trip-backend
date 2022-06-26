@@ -1,5 +1,6 @@
 const Users = require("../model/userModel")
 const jwt = require('jsonwebtoken')
+  // Get user information by id
 const auth = async (req, res, next) => {
     try {
         const token = req.header("Authorization")

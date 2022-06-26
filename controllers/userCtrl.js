@@ -1,6 +1,9 @@
 const Users = require('../model/userModel')
 const Hotels = require('../model/hotelModel')
-const Rooms = require('../model/roomModel')
+const Rooms = require('../model/roomModel');
+const Bookings = require('../model/bookingModel');
+const Reviews = require('../model/reviewModel');
+
 const { APIfeatures } = require("../lib/features")
 
 const userCtrl = {
@@ -76,8 +79,8 @@ const userCtrl = {
             await Users.findOneAndDelete({ _id: userId });
             await Hotels.findOneAndDelete({ user: userId });
             await Rooms.findOneAndDelete({ user: userId });
-            // await Bookings.findOneAndDelete({ user: userId });
-            // await Reviews.findOneAndDelete({ user: userId });
+            await Bookings.findOneAndDelete({ user: userId });
+            await Reviews.findOneAndDelete({ user: userId });
             res.json({ status: "success", msg: "User Deleted Successfully" })
         } catch (err) {
             return res.status(500).json({ msg: err.message })

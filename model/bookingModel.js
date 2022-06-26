@@ -1,5 +1,4 @@
 const mongoose=require("mongoose")
-
 const bookingSchema = new mongoose.Schema({
     room:{
         type: mongoose.Types.ObjectId,ref:"room"
@@ -54,7 +53,6 @@ const bookingSchema = new mongoose.Schema({
     payment_type:{
         type: String,
         required: true,
-        default:"khalti"
     },
 
 })
