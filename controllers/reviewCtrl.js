@@ -43,7 +43,6 @@ const reviewCtrl = {
     createReview: async (req, res) => {
         try {
             const { hotelId, review, hotel_rating, hotelUserId } = req.body;
-            console.log({ hotelId, review, hotel_rating, hotelUserId });
             const hotel = await Hotel.findById(hotelId);
             if (!hotel)
                 return res.status(404).json({ status: "failed", msg: 'Hotel not found' });
@@ -106,7 +105,7 @@ const reviewCtrl = {
             const reviews = result[0].status === "fulfilled" ? result[0].value : []
             const count = result[1].status === "fulfilled" ? result[1].value : 0;
             return res.json({
-                "status": "success",
+                status: "success",
                 count,
                 reviews
             })
