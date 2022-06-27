@@ -41,8 +41,6 @@ const userCtrl = {
                 avatar, username, fullname, phone, address, gender
             })
 
-            console.log(updatedUser);
-
             res.json({
                 status: "success", msg: "Update Success!", updatedUser: {
                     ...updatedUser._doc

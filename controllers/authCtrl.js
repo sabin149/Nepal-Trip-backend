@@ -29,7 +29,7 @@ const authCtrl = {
             const refresh_token = createRefreshToken({ id: newUser._id })
             res.cookie('refreshtoken', refresh_token, {
                 httpOnly: true,
-                path: '/api/refresh_token',
+                path: '/api/user/refresh_token',
                 maxAge: 30 * 24 * 60 * 60 * 1000 // 30days
             })
             await newUser.save()
@@ -83,10 +83,11 @@ const authCtrl = {
     },
     generateAccessToken: async (req, res) => {
         try {
+           
             const rf_token = req.cookies.refreshtoken
-            if (!rf_token) return res.status(400).json({ status: "failed", msg: "Please login now." })
+            if (!rf_token) return res.status(400).json({ status: "failed", msg: "Please Login or Register For Hotel Booking" })
             jwt.verify(rf_token, process.env.REFRESH_TOKEN_SECRET, async (err, result) => {
-                if (err) return res.status(400).json({ status: "failed", msg: "Please login now." })
+                if (err) return res.status(400).json({ status: "failed", msg: "Please Login or Register For Hotel Booking" })
                 const user = await Users.findById(result.id).select("-password")
                 if (!user) return res.status(400).json({ status: "failed", msg: "This does not exist." })
                 const access_token = createAccessToken({ id: result.id })
