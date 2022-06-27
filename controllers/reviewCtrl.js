@@ -114,6 +114,72 @@ const reviewCtrl = {
             res.status(500).json({ status: "failed", msg: error.message });
         }
     },
+    updateReview: async (req, res) => {
+        try {
+            const { review } = req.body;
+            if (!review)
+                return res.status(400).json({ status: "failed", msg: "Please add the review" })
+            const newReview = await Review.findOneAndUpdate({
+                _id: req.params.id,
+                user: req.user._id
+            }, { review }, { new: true });
+            res.json({
+                status: "success", msg: 'Review updated successfully',
+                newReview: {
+                    ...newReview._doc
+                }
+            });
+        } catch (error) {
+            res.status(500).json({ status: "failed", msg: error.message });
+        }
+    },
+    deleteReview: async (req, res) => {
+        try {
+            const review = await Review.findOneAndDelete({
+                _id: req.params.id,
+                $or: [
+                    { user: req.user._id },
+                    { hotelUserId: req.user._id }
+                ]
+            })
+            if (!review)
+                return res.status(404).json({ status: "failed", msg: 'Review not found' });
+            await Hotel.findOneAndUpdate(
+                {
+                    _id: review.hotelId
+                },
+                { $pull: { hotel_reviews: req.params.id } })
+            res.json({ status: "success", msg: 'Review deleted successfully' });
+        } catch (error) {
+        }
+    },
+    likeReview: async (req, res) => {
+        try {
+            const review = await Review.find({ _id: req.params.id, likes: req.user._id });
+            if (review.length > 0)
+                return res.status(404).json({ status: "failed", msg: 'You already liked this review' });
+            await Review.findOneAndUpdate({ _id: req.params.id }, {
+                $push: {
+                    likes: req.user._id
+                }
+            }, { new: true })
+            res.json({ status: "success", msg: 'Review liked successfully' });
+        } catch (error) {
+            res.status(500).json({ status: "failed", msg: error.message });
+        }
+    },
+    unLikeReview: async (req, res) => {
+        try {
+            await Review.findOneAndUpdate({ _id: req.params.id }, {
+                $pull: {
+                    likes: req.user._id
+                }
+            }, { new: true })
+            res.json({ status: "success", msg: 'Review unliked successfully' });
+        } catch (error) {
+            res.status(500).json({ status: "failed", msg: error.message });
+        }
+    },
 }
 module.exports = reviewCtrl;
 
