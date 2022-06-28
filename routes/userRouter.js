@@ -9,5 +9,7 @@ router.delete('/user/:id', auth, userCtrl.deleteUser)
 router.patch('/user', auth, userCtrl.updateUser)
 router.patch('/updateuser/:id', auth, userCtrl.adminUpdateUser)
 router.patch("/user/:id", auth, authAdmin, userCtrl.changeUserRole);
+router.post("/send-reset-password-email", userCtrl.sendUserPaswordResetEmail);
+router.post("/reset-password/:id/:token", userCtrl.resetUserPassword);
 
 module.exports = router

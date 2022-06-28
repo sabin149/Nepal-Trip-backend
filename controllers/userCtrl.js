@@ -104,7 +104,68 @@ const userCtrl = {
         } catch (error) {
             return res.status(500).json({ status: "failed", msg: error.message })
         }
-    }
+    },
+    sendUserPaswordResetEmail: async (req, res) => {
+        try {
+            const { email } = req.body;
+            if (email) {
+                const user = await Users.findOne({ email: email });
+                if (user) {
+                    const secret = user._id + process.env.ACCESS_TOKEN_SECRET;
+                    const token = jwt.sign({ userID: user._id }, secret, { expiresIn: '15m' });
+                    const link = `http://localhost:3000/api/reset-password/${user._id}/${token}`;
+                    console.log(link)
+
+                    console.log("<------------------------------------------>")
+
+                    let info = await transporter.sendMail({
+                        from: process.env.EMAIL_FROM,
+                        to: user.email,
+                        subject: 'Password Reset Link',
+                        html: `<h1>
+                            <a href="${link}">Click Here</a> to Reset Your Password</h1>`
+                    });
+
+                    res.status(200).json({ status: "success", msg: "Password Reset Link Sent Successfully, Check Your Mail",  info });
+                } else {
+                    res.status(400).json({ status: "failed", msg: "Email doesn't exist" });
+                }
+            } else {
+                res.status(400).json({ status: "failed", msg: "Email field is required" })
+            }
+        } catch (error) {
+            return res.status(500).json({ status: "failed", msg: error.message })
+        }
+    },
+    resetUserPassword: async (req, res) => {
+        try {
+            const { password, password_confirmation } = req.body;
+            const { id, token } = req.params;
+
+            const user = await Users.findById(id);
+            const newSecret = user._id + process.env.ACCESS_TOKEN_SECRET;
+            jwt.verify(token, newSecret)
+            if (password && password_confirmation) {
+                if (password.length < 6) return res.status(400).json({ status: "failed", msg: "Password must be at least 6 characters." })
+                if (password === password_confirmation) {
+
+                    const salt = await bcrypt.genSalt(12);
+                    const hashedPassword = await bcrypt.hash(password, salt);
+                    await Users.findByIdAndUpdate(user._id, { $set: { password: hashedPassword } });
+
+                    res.status(200).json({ status: "failed", msg: "Password Reset Successfully" });
+
+                } else {
+                    res.status(400).json({ status: "failed", msg: "Password and Confirmation Password Doesn't Match" });
+                }
+            } else {
+                res.status(400).json({ status: "failed", msg: "All fields are required" });
+            }
+        } catch (error) {
+            res.status(500).send({ "status": "failed", "message": error.message })
+
+        }
+    },
 }
 
 module.exports = userCtrl;
