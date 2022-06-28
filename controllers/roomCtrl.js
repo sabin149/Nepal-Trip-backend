@@ -1,10 +1,10 @@
 const Room = require('../model/roomModel');
 const Hotel = require('../model/hotelModel');
+
 const roomCtrl = {
     createHotelRoom: async (req, res) => {
         try {
             const { hotelId, room_type, room_price, room_options, room_images, room_facilities, hotelUserId } = req.body
-
             if (hotelId && room_type && room_price && room_options && room_facilities) {
                 if (room_images.length === 0)
                     return res.status(400).json({ msg: "Please add your room images." })
@@ -53,10 +53,7 @@ const roomCtrl = {
     getHotelRooms: async (req, res) => {
         try {
             const hotelId=(await Hotel.findById(req.params.id).select("_id"));
-            console.log(hotelId);
             const rooms = await Room.findOne({hotelId})
-            console.log(rooms);
-
         } catch (error) {
             return res.status(500).json({ status: "failed", msg: error.message })
         }
@@ -70,10 +67,8 @@ const roomCtrl = {
         }
     },
     updateHotelRoom: async (req, res) => {
-
         try {
             const { room_type, room_price, room_options, room_images, room_facilities } = req.body
-            console.log(req.body)
             if (room_type && room_price && room_options && room_facilities) {
                 if (room_images.length === 0)
                     return res.status(400).json({ msg: "Please add your room images." })
@@ -130,5 +125,4 @@ const roomCtrl = {
         }
     }
 }
-
 module.exports = roomCtrl;

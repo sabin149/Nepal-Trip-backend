@@ -3,7 +3,7 @@ const auth = require("../middleware/auth")
 const authAdmin = require("../middleware/auth-admin")
 const userCtrl = require("../controllers/userCtrl")
 
-router.get('/user', auth, userCtrl.getUsers)
+router.get('/user', userCtrl.getUsers)
 router.get('/user/:id', auth, userCtrl.getUser)
 router.delete('/user/:id', auth, userCtrl.deleteUser)
 router.patch('/user', auth, userCtrl.updateUser)

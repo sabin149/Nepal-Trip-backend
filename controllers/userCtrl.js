@@ -1,6 +1,9 @@
 const Users = require('../model/userModel')
 const Hotels = require('../model/hotelModel')
-const Rooms = require('../model/roomModel')
+const Rooms = require('../model/roomModel');
+const Bookings = require('../model/bookingModel');
+const Reviews = require('../model/reviewModel');
+
 const { APIfeatures } = require("../lib/features")
 
 const userCtrl = {
@@ -33,14 +36,10 @@ const userCtrl = {
     updateUser: async (req, res) => {
         try {
             const { avatar, username, fullname, phone, address, gender } = req.body
-
-
             if (!fullname) return res.status(400).json({ status: "failed", msg: "Please add your full name." })
             const updatedUser = await Users.findOneAndUpdate({ _id: req.user._id }, {
                 avatar, username, fullname, phone, address, gender
             })
-
-            console.log(updatedUser);
 
             res.json({
                 status: "success", msg: "Update Success!", updatedUser: {
@@ -78,8 +77,8 @@ const userCtrl = {
             await Users.findOneAndDelete({ _id: userId });
             await Hotels.findOneAndDelete({ user: userId });
             await Rooms.findOneAndDelete({ user: userId });
-            // await Bookings.findOneAndDelete({ user: userId });
-            // await Reviews.findOneAndDelete({ user: userId });
+            await Bookings.findOneAndDelete({ user: userId });
+            await Reviews.findOneAndDelete({ user: userId });
             res.json({ status: "success", msg: "User Deleted Successfully" })
         } catch (err) {
             return res.status(500).json({ msg: err.message })
@@ -167,6 +166,5 @@ const userCtrl = {
         }
     },
 }
-
 module.exports = userCtrl;
 
