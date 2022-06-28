@@ -83,7 +83,6 @@ const authCtrl = {
     },
     generateAccessToken: async (req, res) => {
         try {
-           
             const rf_token = req.cookies.refreshtoken
             if (!rf_token) return res.status(400).json({ status: "failed", msg: "Please Login or Register For Hotel Booking" })
             jwt.verify(rf_token, process.env.REFRESH_TOKEN_SECRET, async (err, result) => {
