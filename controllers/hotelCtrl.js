@@ -4,7 +4,14 @@ const hotelCtrl = {
     getHotels: async (req, res) => {
         try {
             const features = new APIfeatures(Hotel.find()
-                .populate('user').populate("hotel_reviews")
+                .populate('user')
+                .populate({
+                    path: 'hotel_reviews',
+                    populate: {
+                        path: 'user likes',
+                        select: '-password'
+                    }
+                })
                 .populate({
                     path: "rooms",
                     populate: {
@@ -140,7 +147,13 @@ const hotelCtrl = {
                     populate: {
                         path: "room_type"
                     }
-                }).populate("hotel_reviews")
+                }).populate({
+                    path: 'hotel_reviews',
+                    populate: {
+                        path: 'user likes',
+                        select: '-password'
+                    }
+                })
             res.json({ status: 'success', hotel });
         } catch (error) {
             return res.status(500).json({ status: "failed", msg: error.message })
