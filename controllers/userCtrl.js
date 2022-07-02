@@ -3,6 +3,9 @@ const Hotels = require('../model/hotelModel')
 const Rooms = require('../model/roomModel');
 const Bookings = require('../model/bookingModel');
 const Reviews = require('../model/reviewModel');
+const bcrypt = require('bcrypt');
+const jwt = require("jsonwebtoken")
+const transporter = require('../config/emailConfig');
 
 const { APIfeatures } = require("../lib/features")
 
@@ -60,7 +63,7 @@ const userCtrl = {
             })
 
             res.json({
-                status: "success", msg: username + "Profile Updated!", updatedUser: {
+                status: "success", msg: username + " Profile Updated!", updatedUser: {
                     ...updatedUser._doc
                 }
             })
@@ -112,7 +115,7 @@ const userCtrl = {
                 if (user) {
                     const secret = user._id + process.env.ACCESS_TOKEN_SECRET;
                     const token = jwt.sign({ userID: user._id }, secret, { expiresIn: '15m' });
-                    const link = `http://localhost:3000/api/reset-password/${user._id}/${token}`;
+                    const link = `http://localhost:3000/reset-password/${user._id}/${token}`;
                     console.log(link)
 
                     console.log("<------------------------------------------>")
@@ -125,7 +128,7 @@ const userCtrl = {
                             <a href="${link}">Click Here</a> to Reset Your Password</h1>`
                     });
 
-                    res.status(200).json({ status: "success", msg: "Password Reset Link Sent Successfully, Check Your Mail",  info });
+                    res.status(200).json({ status: "success", msg: "Password Reset Link Sent Successfully, Check Your Mail", info });
                 } else {
                     res.status(400).json({ status: "failed", msg: "Email doesn't exist" });
                 }
@@ -163,6 +166,37 @@ const userCtrl = {
         } catch (error) {
             res.status(500).send({ "status": "failed", "message": error.message })
 
+        }
+    },
+    changeUserPassword: async (req, res) => {
+        try {
+            const { old_password, password, password_confirmation } = req.body;
+
+            if (old_password && password && password_confirmation) {
+                if (password.length < 6) return res.status(400).json({ status: "failed", msg: "Password must be at least 6 characters." })
+
+                const isMatch = await bcrypt.compare(old_password, req.user.password)
+                if (!isMatch) return res.status(400).json({ status: "failed", msg: " Old Password is incorrect." })
+
+                const checkMatch = old_password === password;
+                if (checkMatch) return res.status(400).json({ status: "failed", msg: "Old Password and New Password are same." })
+
+                if (password !== password_confirmation) return res.status(400).json({ status: "failed", msg: "Password and Confirmation Password Doesn't Match" })
+                const newHashedPassword = await bcrypt.hash(password, 12)
+
+                await Users.findByIdAndUpdate(req.user._id, { $set: { password: newHashedPassword } });
+
+                res.json({
+                    status: "success",
+                    msg: 'Password Changed Successfully'
+                })
+
+            } else {
+                res.status(400).json({ status: "failed", msg: "All fields are required" })
+
+            }
+        } catch (error) {
+            return res.status(500).json({ status: "failed", msg: error.message })
         }
     },
 }
