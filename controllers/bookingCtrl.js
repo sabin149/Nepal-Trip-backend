@@ -174,7 +174,11 @@ const bookingCtrl = {
     },
     getBookingByHotel: async (req, res) => {
         try {
-            const features = new APIfeatures(Bookings.find({ hotel: req.params.id }).populate('user').
+            const features = new APIfeatures(Bookings.find({ hotel: req.params.id }).populate({
+                path: 'user',
+                select: '-password'
+                
+            }).
                 populate('room').
                 populate('hotel'), req.query).sorting()
             const result = await Promise.allSettled([
