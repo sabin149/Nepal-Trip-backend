@@ -21,9 +21,12 @@ const bookingCtrl = {
                 tc,
                 payment_id,
                 payment_type,
+                children,
+                adults,
+                rooms
             } = req.body
 
-            if (!room || !hotel || !start_date || !end_date || !total_amount || !name || !email || !phone || !address || !payment_id || !payment_type) {
+            if (!room || !hotel || !start_date || !end_date || !total_amount || !name || !email || !phone || !address || !payment_id || !payment_type || !adults) {
                 return res.status(400).json({
                     status: "failed",
                     msg: "Please fill all the fields"
@@ -75,7 +78,10 @@ const bookingCtrl = {
                 request,
                 tc,
                 payment_id,
-                payment_type
+                payment_type,
+                children,
+                adults,
+                rooms
             })
             await booking.save();
 
@@ -168,7 +174,7 @@ const bookingCtrl = {
     },
     getBookingByHotel: async (req, res) => {
         try {
-            const features = new APIfeatures(Bookings.find({hotel: req.params.id }).populate('user').
+            const features = new APIfeatures(Bookings.find({ hotel: req.params.id }).populate('user').
                 populate('room').
                 populate('hotel'), req.query).sorting()
             const result = await Promise.allSettled([
