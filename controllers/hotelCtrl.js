@@ -236,9 +236,8 @@ const hotelCtrl = {
             const features = new APIfeatures(Hotel.find({ _id: { $in: req.user.favourites } }), req.query).paginating();
 
             const favouriteHotels = await features.query.sort("-createdAt");
-            // console.log(favouriteHotels);
             res.json({
-                status: "success", favouriteHotels,
+                status: "success", hotel:favouriteHotels,
                 count: favouriteHotels.length
             })
         } catch (error) {

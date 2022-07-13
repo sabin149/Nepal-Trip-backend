@@ -55,11 +55,11 @@ const userCtrl = {
     },
     adminUpdateUser: async (req, res) => {
         try {
-            const { avatar, fullname, username, phone, address, gender } = req.body
+            const { avatar, fullname, username, phone, address, gender, role } = req.body
             if (!fullname) return res.status(400).json({ status: "failed", msg: "Please add your full name." })
 
             const updatedUser = await Users.findOneAndUpdate({ _id: req.params.id }, {
-                avatar, username, fullname, phone, address, gender
+                avatar, username, fullname, phone, address, gender, role
             })
 
             res.json({
@@ -92,7 +92,6 @@ const userCtrl = {
             const { role } = req.body;
             if (!role)
                 return res.status(400).json({ status: "failed", msg: "Role field is required" })
-
             if (role === "admin" || role === "user" || role === "vendor") {
                 const newUser = await Users.findByIdAndUpdate(req.params.id, { $set: { role } });
                 res.json({
