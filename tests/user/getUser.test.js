@@ -22,3 +22,5 @@ describe('Test for User Schema', () => {
     });
 
 });
+
+

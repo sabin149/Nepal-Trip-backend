@@ -17,8 +17,8 @@ afterAll(async () => {
 describe('Test for Room Schema', () => {
     // the code below is for insert testing
     it('Test for get Hotel Rooms',async () => {
-        const booking = await Rooms.findOne({"_id":"6207ec775f69106131688a13"});
-        expect(booking.ok);
+        const room = await Rooms.findOne({"_id":"6207ec775f69106131688a13"});
+        expect(room.ok);
     });
 
 });

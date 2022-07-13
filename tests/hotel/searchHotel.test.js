@@ -15,7 +15,6 @@ afterAll(async () => {
 
 describe('Test for Hotel Schema', () => {
     it('Test for Search Hotels',async () => {
-       
         const res= await Hotels.find({
             address:"Pokhara"
         });

@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-// use the new name of the database
 const url = 'mongodb://localhost:27017/test_nepaltrip';
 
 beforeAll(async () => {
@@ -15,11 +14,9 @@ afterAll(async () => {
 
 describe('Test for User Schema', () => {
     // the code below is for insert testing
-   
         it('Test for Logout User',async (req,res) => {
         const status = await res.clearCookie('refreshtoken', { path: '/api/refresh_token' })
                 expect(status.ok); 
     })
 
 })
-  

@@ -1,7 +1,6 @@
 const User = require('../../model/userModel');
 const mongoose = require('mongoose');
 
-// use the new name of the database
 const url = 'mongodb://localhost:27017/test_nepaltrip';
 
 beforeAll(async () => {
@@ -19,7 +18,6 @@ describe('Test for User Schema', () => {
     it('Test for Refresh Token', () => {
         const refresh_token = {
             "username" : "sabin",
-           
         };
         return User.find(refresh_token)
             .then((res) => {

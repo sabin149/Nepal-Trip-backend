@@ -1,9 +1,6 @@
 const Rooms = require('../../models/roomModel');
 const mongoose = require('mongoose');
-
-// use the new name of the database
 const url = 'mongodb://localhost:27017/nepaltriptest';
-
 beforeAll(async () => {
     await mongoose.connect(url, {
         useNewUrlParser: true,
@@ -13,7 +10,6 @@ beforeAll(async () => {
 afterAll(async () => {
     await mongoose.connection.close();
 });
-
 describe('Test for Room Schema', () => {
     return Rooms.findOneAndUpdate({
         _id:Object("6208b423237fcf48b51b2cae")
@@ -28,3 +24,4 @@ describe('Test for Room Schema', () => {
     })
 
 });
+

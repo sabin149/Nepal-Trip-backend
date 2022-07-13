@@ -19,7 +19,7 @@ describe('Test for Booking Schema', () => {
     it('Test for delete Booking',async () => {
         const booking = await Bookings.findByIdAndDelete(
             "62dd743a58a1651e8319786f"
-     );
+    );
         expect(booking.ok);
 
     });
