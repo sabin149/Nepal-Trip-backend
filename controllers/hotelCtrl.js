@@ -1,4 +1,5 @@
 const Hotel = require('../model/hotelModel');
+const User=require('../model/userModel');
 const { APIfeatures } = require('../lib/features');
 const hotelCtrl = {
     getHotels: async (req, res) => {
@@ -192,6 +193,53 @@ const hotelCtrl = {
                     ...hotel._doc,
                     hotel_name, rating, address, phone, hotel_email, pan_no, price, hotel_images, hotel_info, hotel_facilities, hotel_policies, hotel_validity
                 }
+            })
+        } catch (error) {
+            return res.status(500).json({ status: "failed", msg: error.message })
+        }
+    },
+    saveFavouriteHotel: async (req, res) => {
+        try {
+            const user = await User.find({ _id: req.user._id, favourites: req.params.id })
+            if (user.length > 0) {
+                return res.status(400).json({ status: "failed", msg: "Hotel already added to favourites." })
+            }
+            const favourites = await User.findOneAndUpdate({ _id: req.user._id },
+                { $push: { favourites: req.params.id } },
+                { new: true })
+
+            if (!favourites)
+                return res.status(400).json({ status: "failed", msg: "This user does not exit." })
+
+            res.json({ status: "success", msg: "Hotel added to favourites.", user: favourites })
+        } catch (error) {
+            return res.status(500).json({ status: "failed", msg: error.message })
+        }
+    },
+    unSaveFavouriteHotel: async (req, res) => {
+        try {
+            const favourite = await User.findOneAndUpdate({ _id: req.user._id }, {
+                $pull: { favourites: req.params.id }
+            }, { new: true })
+
+            if (!favourite) return res.status(400).json({ msg: 'This user does not exist.' })
+
+            res.json({ status: "success", msg: 'Hotel removed from favourites.', user: favourite })
+
+
+        } catch (error) {
+            return res.status(500).json({ status: "failed", msg: error.message })
+        }
+    },
+    getFavouriteHotels: async (req, res) => {
+        try {
+            const features = new APIfeatures(Hotel.find({ _id: { $in: req.user.favourites } }), req.query).paginating();
+
+            const favouriteHotels = await features.query.sort("-createdAt");
+            // console.log(favouriteHotels);
+            res.json({
+                status: "success", favouriteHotels,
+                count: favouriteHotels.length
             })
         } catch (error) {
             return res.status(500).json({ status: "failed", msg: error.message })
