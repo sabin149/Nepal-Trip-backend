@@ -123,8 +123,10 @@ const userCtrl = {
                         from: process.env.EMAIL_FROM,
                         to: user.email,
                         subject: 'Password Reset Link',
-                        html: `<h1>
-                            <a href="${link}">Click Here</a> to Reset Your Password</h1>`
+                        html: `
+                        <h1>Password Reset Link</h1> <br/>
+                        <h2>
+                            <a href="${link}">Click Here</a> to Reset Your Password</h2>`
                     });
 
                     res.status(200).json({ status: "success", msg: "Password Reset Link Sent Successfully, Check Your Mail", info });

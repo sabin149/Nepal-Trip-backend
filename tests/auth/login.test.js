@@ -1,7 +1,5 @@
 const User = require('../../model/userModel');
 const mongoose = require('mongoose');
-
-// use the new name of the database
 const url = 'mongodb://localhost:27017/nepaltriptest';
 
 beforeAll(async () => {
@@ -18,14 +16,12 @@ describe('Test for User Schema', () => {
     // the code below is for insert testing
     it('Test for Login User', () => {
         const login = {
-            "email": "sabin@gmail.com",
+            "email": "sabin52@gmail.com",
             "password": "123456",
-           
         };
         return User.find(login)
             .then((res) => {
-                expect(res[0].email).toEqual('sabin@gmail.com');
+                expect(res[0].email).toEqual('sabin52@gmail.com');
             });
     });
-
 });

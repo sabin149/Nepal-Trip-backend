@@ -15,7 +15,6 @@ afterAll(async () => {
 
 describe('Test for Hotel Schema', () => {
     it('Test for Get Favorite Hotels',async () => {
-       
         const res= await Hotels.find({
             _id:"62a2ea502366fe8c533c2b6c"
         });
@@ -23,3 +22,5 @@ describe('Test for Hotel Schema', () => {
     });
 
 });
+
+

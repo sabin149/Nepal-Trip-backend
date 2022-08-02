@@ -1,4 +1,4 @@
-const Rooms = require('../../models/roomModel');
+const Rooms = require('../../model/roomModel');
 const mongoose = require('mongoose');
 
 // use the new name of the database
@@ -17,8 +17,9 @@ afterAll(async () => {
 describe('Test for Room Schema', () => {
     // the code below is for insert testing
     it('Test for get Rooms',async () => {
-        const booking = await Rooms.findOne({"_id":"6207ec775f69106131688a13"});
-        expect(booking.ok);
+        const room = await Rooms.findOne({"_id":"62a87412b3a08b8d4aad5f1c"});
+        expect(room.ok);
     });
 
 });
+

@@ -15,7 +15,7 @@ afterAll(async () => {
 
 describe('Test for Hotel Schema', () => {
     it('Test for Get Hotel',async () => {
-       
+
         const res= await Hotels.findById(
             "62a9af98affa11d32ad6acce"
         );
